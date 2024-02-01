@@ -1,0 +1,28 @@
+import java.util.Scanner;
+public class TreasureHunt{
+    public static int findTreasure(char[] map){
+        int location = -1;
+        int index = 0;
+        if (map.length > 0) {
+            for(int x: map){
+                if (map[index]=='T') {
+                    location = index;
+                }
+                index++;
+            }
+        }
+        return location;
+    }
+    public static void main(String [] args){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the treasure map ('N' - No treasure and 'T' - Treasure):");
+        String s = sc.nextLine();
+        char[] map = s.toCharArray();
+        if (findTreasure(map) == -1) {
+            System.out.print("There is no treasure on this treasure map.");
+        }
+        else{
+            System.out.print("The treasure can be found in location "+findTreasure(map)+".");
+        }
+    }
+}
