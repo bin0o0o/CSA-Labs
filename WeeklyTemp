@@ -1,0 +1,57 @@
+import java.util.Scanner;
+public class WeeklyTemp {
+    public static double totalTemp(double[] temps){
+        double total = 0.0;
+        if (temps.length > 0) {
+            for (double x :temps) {
+                total+=x;
+            }
+        }
+        return total;
+    }
+    public static double avgTemp(double[] values){
+        double avg = 0.0;
+        if (values.length >0){
+            for (double y: values) {
+                avg += y;
+            }
+            avg/=values.length;
+        }
+        return avg;
+    }
+    public static double highTemp(double[] values){
+        double high = 0.0;
+        if (values.length > 0) {
+            for (double z: values) {
+                if (z > high) {
+                    high = z;
+                }
+            }
+        }
+        return high;
+    }
+    public static void main(String[] args) {
+        double d1,d2,d3,d4,d5,d6,d7;
+        Scanner sc = new Scanner(System.in);
+        System.out.println("---Weekly Temperatures Lab---");
+        System.out.println("Enter the daily high temperature (in Fahrenheit) for 7 days.");
+        System.out.print("High temperature of Day 1: ");
+        d1 = sc.nextDouble();
+        System.out.print("High temperature of Day 2: ");
+        d2 = sc.nextDouble();
+        System.out.print("High temperature of Day 3: ");
+        d3 = sc.nextDouble();
+        System.out.print("High temperature of Day 4: ");
+        d4 = sc.nextDouble();
+        System.out.print("High temperature of Day 5: ");
+        d5 = sc.nextDouble();
+        System.out.print("High temperature of Day 6: ");
+        d6 = sc.nextDouble();
+        System.out.print("High temperature of Day 7: ");
+        d7 = sc.nextDouble();
+        double[] temps = {d1, d2, d3, d4, d5, d6, d7};
+        System.out.printf("\nAverage Temperature: %.2f°F", avgTemp(temps));
+        System.out.printf("\nHighest Temperature: %.2f°F", highTemp(temps));
+        System.out.printf("\nTotal of all temperatures entered: %.2f°F", totalTemp(temps));
+    }
+}
