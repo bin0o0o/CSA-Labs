@@ -1,0 +1,171 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Maze maze = new Maze();
+        boolean won = false;
+        System.out.println(maze);
+        while (!won) {
+            System.out.println("Enter move (W - up, A - left, S - Down, D -Right): ");
+
+            if (scanner.hasNext()) {
+                char move = scanner.next().charAt(0);
+
+                boolean moved = false;
+                switch (move) {
+                    case 'W':
+                    case 'w':
+                        moved = maze.move('W');
+                        break;
+                    case 'A':
+                    case 'a':
+                        moved = maze.move('A');
+                        break;
+                    case 'S':
+                    case 's':
+                        moved = maze.move('S');
+                        break;
+                    case 'D':
+                    case 'd':
+                        moved = maze.move('D');
+                        break;
+                    default:
+                        break;
+                }
+
+                if (!moved) {
+                    System.out.println("Invalid move");
+                } else {
+                    System.out.println(maze);
+                }
+
+                if (maze.won()) {
+                    won = true;
+                    System.out.println("Congratulations you solved the maze in " + maze.getMoveCount() + " moves!");
+                }
+            } else {
+                // No more input available, break the loop
+                break;
+            }
+        }
+
+        scanner.close();
+    }
+}
+
+
+
+public class Maze {
+    private char[][] maze;
+    private int playerRow;
+    private int playerColumn;
+    private int moveCount;
+
+    public Maze() {
+        // Default maze as given in the directions
+        char[][] defaultMaze = {
+            {'W', 'W', 'W', 'W', 'W', '-',},
+            {'S', '-', '-', '-', 'W', '-',},
+            {'W', 'W', 'W', '-', 'W', '-',},
+            {'W', '-', 'W', '-', 'W', '-',},
+            {'E', '-', 'W', '-', '-', '-',},
+            {'W', '-', '-', '-', 'W', 'W',}
+        };
+        this.maze = defaultMaze;
+        this.moveCount = 0;
+        this.findPlayerPosition();
+    }
+
+    public Maze(char[][] load) {
+        this.maze = new char[load.length][load[0].length];
+        for (int i = 0; i < load.length; i++) {
+            System.arraycopy(load[i], 0, this.maze[i], 0, load[i].length);
+        }
+        this.moveCount = 0;
+        this.findPlayerPosition();
+    }
+
+    public boolean won() {
+        return this.maze[playerRow][playerColumn] == 'E';
+    }
+
+    public int getMoveCount() {
+        return moveCount;
+    }
+
+    public int getPlayerRow() {
+        return playerRow;
+    }
+
+    public int getPlayerColumn() {
+        return playerColumn;
+    }
+
+    public char[][] getMaze() {
+        return maze;
+    }
+
+    public boolean move(char direction) {
+        int newRow = playerRow;
+        int newColumn = playerColumn;
+
+        switch (direction) {
+            case 'W':
+                newRow--;
+                break;
+            case 'S':
+                newRow++;
+                break;
+            case 'A':
+                newColumn--;
+                break;
+            case 'D':
+                newColumn++;
+                break;
+            default:
+                return false; // Invalid direction
+        }
+
+        if (isValidMove(newRow, newColumn)) {
+            playerRow = newRow;
+            playerColumn = newColumn;
+            moveCount++;
+            return true;
+        } else {
+            return false; // Invalid move
+        }
+    }
+
+    private boolean isValidMove(int row, int column) {
+        return row >= 0 && row < maze.length && column >= 0 && column < maze[0].length && maze[row][column] != 'W';
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[i].length; j++) {
+                if (i == playerRow && j == playerColumn) {
+                    builder.append('X');
+                } else {
+                    builder.append(maze[i][j]);
+                }
+            }
+            builder.append('\n');
+        }
+        return builder.toString();
+    }
+
+    private void findPlayerPosition() {
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[i].length; j++) {
+                if (maze[i][j] == 'S') {
+                    playerRow = i;
+                    playerColumn = j;
+                    return;
+                }
+            }
+        }
+    }
+}
