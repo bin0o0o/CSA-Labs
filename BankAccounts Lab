@@ -1,0 +1,146 @@
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("---Bank Account Program---");
+        System.out.println("");
+        BankAccount mike = new BankAccount("Mike Thomas", "T12564", 1250);
+        CheckingAccount ravi = new CheckingAccount("Ravi Patel", "T52643", 256.20);
+        SavingsAccount moms= new SavingsAccount(.5);
+        CheckingAccount cecilia = new CheckingAccount("Cecilia Campos", "T24964", 5200);
+        CheckingAccount harry = new CheckingAccount("Harry Truman", "T450982318", 100);
+
+        mike.makeDeposit(300);
+        ravi.withdrawal(400);
+        cecilia.withdrawal(500);
+
+        System.out.println("");
+        System.out.println("The balance for account #" + mike.getAccountId() + " is: " + String.format("%.2f", mike.getBalance()));
+        System.out.println("The balance for account #" + ravi.getAccountId() + " is: " + String.format("%.2f", ravi.getBalance()));
+        System.out.println("The balance for account #" + cecilia.getAccountId() + " is: " + String.format("%.2f", cecilia.getBalance()));
+        System.out.println("");
+
+        System.out.println(mike.toString());
+        System.out.println("");
+        System.out.println(ravi.toString());
+        System.out.println("");
+        System.out.println(cecilia.toString());
+        System.out.println("");
+        System.out.println(moms.toString());
+
+        moms.setName("Ms. Jane Baker");
+        moms.setAccountId("T189077562");
+        moms.makeDeposit(1000);
+        harry.makeDeposit(2000);
+        harry.withdrawal(400.50);
+        harry.withdrawal(99.75);
+        harry.withdrawal(75.80);
+
+        moms.addInterest();
+        harry.deductFees();
+
+        System.out.println("");
+        System.out.println("Savings account #" + moms.getAccountId() + " balance = $" + moms.getBalance());
+        System.out.println("");
+        System.out.println("Checking account #" + harry.getAccountId() + " balance = $" + harry.getBalance());
+    }
+}
+_-------------------------------------------------------------------------------------------------------------------------------------------
+public class BankAccount{
+    private String name;
+    private String accountId;
+    private double balance;
+
+    public BankAccount(){
+        this.name = "";
+        this.accountId = "";
+        this.balance = 0.0;
+    }
+    public BankAccount(String n, String acctId, double b){
+        this.name = n;
+        this.accountId = acctId;
+        this.balance = b;
+    }
+    public String getName(){
+        return name;
+    }
+    public String getAccountId() {
+        return accountId;
+    }
+    public double getBalance() {
+        return balance;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setAccountId(String accountId) {        
+        this.accountId = accountId;
+    }   
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+    public void makeDeposit(double dep){
+        balance += dep;
+        System.out.println("Your deposit of $" + String.format("%.2f", dep) + " was successful!");
+    }
+    public void withdrawal(double with){
+        if (with > balance) 
+        {
+            System.out.println("Insufficient Funds to withdraw $" + String.format("%.2f", with));
+        } 
+        else
+        {
+            balance -= with;
+            System.out.println("$" + String.format("%.2f", with) + " withdrawn from account!");
+        }
+    }
+    public String toString(){
+        return String.format("Name on Account: %15s\nAccount Id: %20s\nBalance: %23.2f", name,accountId, balance);
+    }
+}
+---------------------------------------------------------------------------------------------------------------
+public class CheckingAccount extends BankAccount{
+    private int transactionCount;
+    public static final int FREE_TRANSACTIONS = 3;
+    public static final double TRANSACTION_FEE = 2.0;
+
+    public CheckingAccount(String name, String id, double initialBal){
+        super(name, id, initialBal);
+        this.transactionCount = 0;
+    }
+    public void makeDeposit(double dep){
+        super.makeDeposit(dep);
+        transactionCount++;
+    }
+    public int getTransactionCount(){
+        return transactionCount;
+    }
+    public void withdrawal(double with){
+        if (with > getBalance()) 
+        {
+            System.out.println("Insufficient Funds to withdraw $" + String.format("%.2f", with));
+        }  
+        else 
+        {
+            super.withdrawal(with);
+            transactionCount++;
+        }
+    }
+    public void deductFees(){
+        if (transactionCount > FREE_TRANSACTIONS) {
+            double feeAmount = (transactionCount - FREE_TRANSACTIONS) * TRANSACTION_FEE;
+            this.withdrawal(feeAmount);
+        }
+    transactionCount = 0;
+    }
+}
+--------------------------------------------------------------------------------------------------------------------
+public class SavingsAccount extends BankAccount{
+    private double interestRate;
+
+    public SavingsAccount(double rate){
+        this.interestRate = rate;
+    }
+    public void addInterest(){
+        double interestEarned = getBalance() * interestRate / 100;
+        makeDeposit(interestEarned);
+    }
+}
