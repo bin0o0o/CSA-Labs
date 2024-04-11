@@ -1,0 +1,275 @@
+import java.util.*;
+public class Main{
+    public static void main(String[] args) {
+        Scanner sam = new Scanner(System.in);
+        VideoStore store = new VideoStore();
+        int c = 0;
+        while (c != 3){
+            System.out.println(
+"Renting Menu\n1. Rent Movie\n2. Rent Game\n3. Checkout\nEnter selection:"
+);
+            c = sam.nextInt();
+            System.out.println("");
+            if (c == 1){
+                if(store.videosInStock().size() == 0){
+                    System.out.println("There are no more videos in stock.\n");
+                }
+                else{
+                  System.out.println("Video Menu");
+                for (int i = 0; i < store.videosInStock().size();i++){
+                    System.out.println((i+1)+". "+store.videosInStock().get(i).getTitle());
+                }
+                System.out.println("0. Cancel\nEnter selection:");
+                int s = sam.nextInt();
+                System.out.println("");
+                if (s != 0){
+                    System.out.println(store.videosInStock().get(s-1).toString());
+                    System.out.println("1 - Rent, 2 - Put Back\nEnter selection:");
+                    int d = sam.nextInt();
+                    if (d == 1){
+                        store.videosInStock().get(s-1).setRented(true);
+                        System.out.println("");
+                    }
+                    else{
+                        System.out.println("");
+                    }
+
+                }  
+                }
+
+            }
+            if (c == 2){
+                if(store.gamesInStock().size() == 0){
+                    System.out.println("There are no more games in stock.\n");
+                }
+                else{
+                  System.out.println("Game Menu");
+                for (int i = 0; i < store.gamesInStock().size();i++){
+                    System.out.println((i+1)+". "+store.gamesInStock().get(i).getTitle());
+                }
+                System.out.println("0. Cancel\nEnter selection:");
+                int s = sam.nextInt();
+                System.out.println("");
+                if (s != 0){
+                    System.out.println(store.gamesInStock().get(s-1).toString());
+                    System.out.println("1 - Rent, 2 - Put Back\nEnter selection:");
+                    int d = sam.nextInt();
+                    if (d == 1){
+                        store.gamesInStock().get(s-1).setRented(true);
+                        System.out.println("");
+                    }
+                    else{
+                        System.out.println("");
+                    }
+
+                }  
+                }
+
+            }
+
+        }
+        if (c == 3){
+            if (store.rented().size() == 0){
+                System.out.print("You did not rent anything.\nHave a good day!");
+            }
+            else{
+                System.out.println("Receipt:\n");
+                if (store.videosInStock().size() != 3){
+                    System.out.println("Rented Videos:");
+            for (int i = 0; i < 3; i++){
+                if (store.getVideos().get(i).isRented() == true){
+                    System.out.printf("    %-16s%20.2f\n",  store.getVideos().get(i).getTitle(), store.getVideos().get(i).getCost());
+                }
+                }
+                System.out.println("");
+                }
+            if (store.gamesInStock().size() != 3){
+                System.out.println("Rented Games:");
+            for (int i = 0; i < 3; i++){
+                if (store.getGames().get(i).isRented() == true){
+                    System.out.printf("    %-16s%20.2f\n",  store.getGames().get(i).getTitle(), store.getGames().get(i).getCost());
+                }
+            }
+            System.out.println("");
+            }
+
+
+            double st = 0;
+            for (int i = 0; i<store.rented().size(); i++){
+                st += store.rented().get(i).getCost();
+            }
+            System.out.printf("%-20s%20.2f\n", "Subtotal:", st);
+            System.out.printf("%-20s%20.2f\n", "Tax:", st*0.0825);
+            System.out.printf("%-20s%20.2f", "Total:", st+(st*0.0825));
+
+            }
+        }
+        }
+    }
+class Video extends Rental{
+        public static final int G = 0;
+        public static final int PG = 1;
+        public static final int PG13 = 2;
+        public static final int R = 3;
+        private String director;
+        private int minutes;
+        public Video(String title, double cost, int rating, String director, int minutes){
+            super(title,cost,rating);
+            this.director = director;
+            this.minutes = minutes;
+        }
+        public String getDirector(){
+            return this.director;
+        }
+        public int getMinutes(){
+            return this.minutes;
+        }
+        public String toString(){
+            String t = "";
+            if (this.getRating() == 0){
+                t = "G";
+            }
+            else if (this.getRating() == 1){
+                t = "PG";
+            }
+            else if (this.getRating() == 2){
+                t = "PG-13";
+            }
+            else if (this.getRating() == 3){
+                t = "R";
+            }
+            String s = String.format("Title:%34s\nCost:%35.2f\nRating:%33s\nDirector:%31s\nRuntime:%24d minutes\n",this.getTitle(),this.getCost(),t,this.getDirector(),this.getMinutes());
+            return s;
+        }
+    }
+import java.util.*;
+public class Rental{
+    private String title;
+    private double cost;
+    private int rating;
+    private boolean rented;
+    public Rental(String t, double c, int r){
+        this.title = t;
+        this.cost = c;
+        this.rating = r;
+        this.rented = false;
+    }
+    public String getTitle(){
+        return this.title;
+    }
+    public double getCost(){
+        return this.cost;
+    }
+    public int getRating(){
+        return this.rating;
+    }
+    public boolean isRented(){
+        return this.rented;
+    }
+    public void setRented(boolean r){
+        this.rented = r;
+    }
+}
+class Game extends Rental{
+        public static final int EARLY_CHILDHOOD = 0;
+        public static final int EVERYONE = 1;
+        public static final int TEEN = 2;
+        public static final int MATURE = 3;
+        private String platform;
+        private int numOfPlayers; 
+        public Game(String title, double cost, int rating, String platform, int numberOfPlayers){
+            super(title,cost,rating);
+            this.platform = platform;
+            this.numOfPlayers = numberOfPlayers;
+        }
+        public String getPlatform(){
+            return this.platform;
+        }       
+        public int getNumberOfPlayers(){
+            return this.numOfPlayers;
+        }
+        public String toString(){
+            String t = "";
+            if (this.getRating() == 0){
+                t = "Early Childhood";
+            }
+            else if (this.getRating() == 1){
+                t = "Everyone";
+            }
+            else if (this.getRating() == 2){
+                t = "Teen";
+            }
+            else if (this.getRating() == 3){
+                t = "Mature";
+            }
+            String s = String.format("Title:%34s\nCost:%35.2f\nRating:%33s\nPlatform:%31s\n# of players:%27d\n",this.getTitle(),this.getCost(),t,this.getPlatform(),this.getNumberOfPlayers());
+            return s;
+        }
+    }
+import java.util.*;
+public class VideoStore{
+    private String platform;
+    private ArrayList<Rental> rentals;
+    public VideoStore(){
+        ArrayList<Rental> list = new ArrayList<Rental>();
+        Rental g1 = new Game("Assassin's Creed", 4.99, 3, "Playstation 3", 1);
+        Rental g2 = new Game("Frogger Advanced", 2.99, 0, "Game Boy Advanced", 1);
+        Rental g3 = new Game("Bomberman Land", 2.99, 2, "Super NES", 4);
+        Rental v1 = new Video("Iron Man 3", 3.99,2,"Shawn Black", 130);
+        Rental v2 = new Video("The Wolverine", 2.79,3,"James Mangold",126);
+        Rental v3 = new Video("The Avengers", 1.99, 2,"Joss Whedon", 143);
+        list.add(g1);
+        list.add(g2);
+        list.add(g3);
+        list.add(v1);
+        list.add(v2);
+        list.add(v3);
+        this.rentals = list;
+    }
+    public ArrayList<Rental> getGames(){
+        ArrayList<Rental> list= new ArrayList<Rental>();
+        for (int i = 0; i < this.rentals.size();i++){
+            if (this.rentals.get(i) instanceof Game == true){
+                list.add(this.rentals.get(i));
+            }
+        }
+        return list;
+    }
+    public ArrayList<Rental> getVideos(){
+        ArrayList<Rental> list= new ArrayList<Rental>();
+        for (int i = 0; i < this.rentals.size();i++){
+            if (this.rentals.get(i) instanceof Video == true){
+                list.add(this.rentals.get(i));
+            }
+        }
+        return list;
+    }
+    public ArrayList<Rental> rented(){
+        ArrayList<Rental> list= new ArrayList<Rental>();
+        for (int i = 0; i < this.rentals.size(); i++){
+            if (this.rentals.get(i).isRented() == true){
+                list.add(this.rentals.get(i));
+            }
+        }
+        return list;
+    }
+    public ArrayList<Rental> gamesInStock(){
+        ArrayList<Rental> list= new ArrayList<Rental>();
+        for (int i = 0; i < this.rentals.size(); i++){
+            if (this.rentals.get(i) instanceof Game == true && this.rentals.get(i).isRented() == false){
+                list.add(this.rentals.get(i));
+            }
+        }
+        return list;
+    }
+    public ArrayList<Rental> videosInStock(){
+        ArrayList<Rental> list= new ArrayList<Rental>();
+        for (int i = 0; i < this.rentals.size(); i++){
+            if (this.rentals.get(i) instanceof Video == true && this.rentals.get(i).isRented() == false){
+                list.add(this.rentals.get(i));
+            }
+        }
+        return list;
+    }
+
+}
