@@ -1,0 +1,62 @@
+public class Main {
+
+    public static void main(String[] args) {
+
+        /* must make t1, t2, and t3 objects below this comment to test properly
+        ** make the above objects according to the instructions in the
+        ** problem description
+        */
+        SingleTable t1 = new SingleTable();
+        SingleTable t2 = new SingleTable();
+        SingleTable t3 = new SingleTable();
+        t1.setNumSeats(4);
+        t2.setNumSeats(8);
+        t3.setNumSeats(12);
+        t1.setViewQuality(60.0);
+        t2.setViewQuality(70.0);
+        t3.setViewQuality(75.0);
+        t1.setHeight(74);
+        t2.setHeight(74);
+        t3.setHeight(76);
+
+        CombinedTable c1 = new CombinedTable(t1, t2);
+
+        System.out.println(c1.canSeat(9));
+        System.out.println(c1.canSeat(11));
+        System.out.println(c1.getDesirability());
+
+        CombinedTable c2 = new CombinedTable(t2, t3);
+
+        System.out.println(c2.canSeat(18));
+        System.out.println(c2.getDesirability());
+        t2.setViewQuality(80);
+        System.out.println(c2.getDesirability());
+    }
+
+}
+public class CombinedTable
+{
+    private SingleTable t1, t2;
+
+    public CombinedTable(SingleTable t1, SingleTable t2)
+    {
+        this.t1 = t1;
+        this.t2 = t2;
+    }
+        
+    public boolean canSeat(int people)
+    {
+        int seats = t1.getNumSeats() + t2.getNumSeats() - 2;
+        return seats >= people;
+    }
+        
+    public double getDesirability()
+    {
+        double averageView = (t1.getViewQuality() + t2.getViewQuality()) / 2;
+
+        if(t1.getHeight() == t2.getHeight())
+            return averageView;
+        else
+            return averageView - 10;
+    }
+}
